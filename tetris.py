@@ -22,7 +22,8 @@ class Tetris:
                              (x_direction * TILE_SIZE, y_direction * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
 
     def update(self):
-        self.tetromino.update()
+        if self.app.anim_trigger:                
+            self.tetromino.update()
         self.sprite_group.update()
 
     def draw(self):
