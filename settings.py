@@ -5,7 +5,7 @@ vec = pg.math.Vector2
 FPS = 60
 FIELD_COLOR = (48, 39, 32)
 
-ANIM_TIME_INTERVAL = 150
+ANIM_TIME_INTERVAL = 300
 FAST_ANIM_TIME_INTERVAL = 15
 
 TILE_SIZE = 50
@@ -17,6 +17,10 @@ INIT_POS_OFFSET = vec(FIELD_W // 2 - 1, 0)
 MOVE_DIRECTIONS = {'left' : vec(-1,0),
                    'right': vec(1, 0),
                    'down' : vec(0, 1)}
+
+TETROMINO_COLORS = [
+    'red', 'green', 'blue', 'cyan', 'magenta', 'orange'
+]
 
 TETROMINOES = {
     'T' : [(0,0),(-1,0),(1,0),(0,-1)],
