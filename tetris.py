@@ -8,7 +8,24 @@ class Tetris:
         self.field_array = self.get_field_array()
         self.sprite_group = pg.sprite.Group()
         self.tetromino = Tetromino(self)
+        self.speed_up = False
     
+    def check_full_lines(self):
+        row = FIELD_H - 1
+        for y_pos in range(FIELD_H - 1, -1, -1):
+            for x_pos in range(FIELD_W):
+                self.field_array[row][x_pos] = self.field_array[y_pos][x_pos]
+
+                if self.field_array[y_pos][x_pos]:
+                    self.field_array[row][x_pos].pos = vec(x_pos,y_pos)
+
+            if sum(map(bool, self.field_array[y_pos])) < FIELD_W:
+                row -= 1
+            else:
+                for x_pos in range(FIELD_W):
+                    self.field_array[row][x_pos].alive = False
+                    self.field_array[row][x_pos] = 0
+
     def put_tetromino_blocks_in_array(self):
         for block in self.tetromino.blocks:
             x_pos,y_pos = int(block.pos.x), int(block.pos.y)
@@ -19,6 +36,7 @@ class Tetris:
 
     def check_tetromino_landing(self):
         if self.tetromino.landing:
+            self.speed_up = False
             self.put_tetromino_blocks_in_array()
             self.tetromino = Tetromino(self)
 
@@ -29,6 +47,8 @@ class Tetris:
             self.tetromino.move(direction='right')
         elif pressed_key == pg.K_w:
             self.tetromino.rotate()
+        elif pressed_key == pg.K_s:
+            self.speed_up = True
 
     def draw_grid(self):
         for x_direction in range(FIELD_W):
@@ -37,7 +57,9 @@ class Tetris:
                              (x_direction * TILE_SIZE, y_direction * TILE_SIZE, TILE_SIZE, TILE_SIZE), 1)
 
     def update(self):
-        if self.app.anim_trigger:                
+        trigger = [self.app.anim_trigger, self.app.fast_anim_trigger][self.speed_up]
+        if trigger:
+            self.check_full_lines()                
             self.tetromino.update()
             self.check_tetromino_landing()
         self.sprite_group.update()
