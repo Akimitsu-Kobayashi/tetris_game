@@ -10,6 +10,11 @@ class Block(pg.sprite.Sprite):
         self.image.fill("orange")
         self.rect = self.image.get_rect()
         
+    def rotate(self, pivot_pos):
+        translated = self.pos - pivot_pos
+        rotated = translated.rotate(90)
+        return rotated + pivot_pos
+
     def set_rect_pos(self):
         self.rect.topleft = self.pos * TILE_SIZE
 
@@ -31,6 +36,13 @@ class Tetromino:
         self.shape = random.choice(list(TETROMINOES.keys()))
         self.blocks = [Block(self, pos) for pos in TETROMINOES[self.shape]]
         
+    def rotate(self):
+        pivot_pos = self.blocks[0].pos
+        new_block_positions = [block.rotate(pivot_pos) for block in self.blocks]
+
+        if not self.is_collide(new_block_positions):
+            for interval, block in enumerate(self.blocks):
+                block.pos = new_block_positions[interval]
 
     def is_collide(self, block_positions):
         return any(map(Block.is_collide, self.blocks, block_positions))
